@@ -1,0 +1,32 @@
+{
+  "tableName": "users",
+  "schema": "public",
+  "description": "User table definition",
+  "columns": [
+    {
+      "name": "id",
+      "type": "BIGINT",
+      "nullable": false,
+      "primaryKey": true,
+      "autoIncrement": true
+    },
+    {
+      "name": "username",
+      "type": "VARCHAR(255)",
+      "nullable": false,
+      "jsonPath": "user.name"
+    },
+    {
+      "name": "email",
+      "type": "VARCHAR(255)",
+      "nullable": true,
+      "jsonPath": "user.email"
+    },
+    {
+      "name": "created_at",
+      "type": "TIMESTAMP",
+      "nullable": false,
+      "defaultValue": "CURRENT_TIMESTAMP"
+    }
+  ]
+}
