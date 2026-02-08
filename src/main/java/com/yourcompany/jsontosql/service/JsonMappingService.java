@@ -6,8 +6,6 @@ import com.yourcompany.jsontosql.exception.JsonMappingException;
 import com.yourcompany.jsontosql.model.ColumnDefinition;
 import com.yourcompany.jsontosql.model.TableDefinition;
 import com.yourcompany.jsontosql.util.JsonPathExtractor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,13 +13,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class JsonMappingService {
     
     private final JsonPathExtractor jsonPathExtractor;
     private final ObjectMapper objectMapper;
+    
+    public JsonMappingService(JsonPathExtractor jsonPathExtractor, ObjectMapper objectMapper) {
+        this.jsonPathExtractor = jsonPathExtractor;
+        this.objectMapper = objectMapper;
+    }
     
     /**
      * Validates JSON data against table definition

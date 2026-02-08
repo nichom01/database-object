@@ -3,20 +3,21 @@ package com.yourcompany.jsontosql.generator;
 import com.yourcompany.jsontosql.model.SqlGenerationRequest;
 import com.yourcompany.jsontosql.model.SqlGenerationResponse;
 import com.yourcompany.jsontosql.model.TableDefinition;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class SqlScriptGenerator {
     
     private final InsertStatementGenerator insertStatementGenerator;
     private final DdlGenerator ddlGenerator;
+    
+    public SqlScriptGenerator(InsertStatementGenerator insertStatementGenerator, DdlGenerator ddlGenerator) {
+        this.insertStatementGenerator = insertStatementGenerator;
+        this.ddlGenerator = ddlGenerator;
+    }
     
     /**
      * Generates a complete SQL script from request and table definition
@@ -26,12 +27,12 @@ public class SqlScriptGenerator {
         List<String> warnings = new ArrayList<>();
         
         // Generate DDL if requested
-        if (request.getIncludeDdl()) {
+        if (request.getIncludeDdl() != null && request.getIncludeDdl()) {
             statements.add(ddlGenerator.generateCreateTable(tableDefinition));
         }
         
         // Generate INSERT statements
-        if (request.getBatchMode()) {
+        if (request.getBatchMode() != null && request.getBatchMode()) {
             List<String> inserts = insertStatementGenerator.generateBatchInserts(tableDefinition, request.getJsonData());
             statements.addAll(inserts);
         } else {

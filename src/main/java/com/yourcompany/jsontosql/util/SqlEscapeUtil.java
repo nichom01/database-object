@@ -1,6 +1,7 @@
 package com.yourcompany.jsontosql.util;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
@@ -11,9 +12,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-@Slf4j
 @Component
 public class SqlEscapeUtil {
+    
+    private static final Logger log = LoggerFactory.getLogger(SqlEscapeUtil.class);
     
     /**
      * Escapes a string value for SQL insertion

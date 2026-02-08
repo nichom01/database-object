@@ -6,29 +6,30 @@ import com.yourcompany.jsontosql.util.JsonPathExtractor;
 import com.yourcompany.jsontosql.util.SqlEscapeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class InsertStatementGeneratorTest {
     
-    @Mock
+    @MockBean
     private JsonPathExtractor jsonPathExtractor;
     
-    @Mock
+    @MockBean
     private SqlEscapeUtil sqlEscapeUtil;
     
-    @InjectMocks
+    @Autowired
     private InsertStatementGenerator insertStatementGenerator;
     
     private TableDefinition tableDefinition;
@@ -71,11 +72,11 @@ class InsertStatementGeneratorTest {
     void testGenerateInsert_Basic() {
         String jsonData = "{\"user\":{\"name\":\"john_doe\",\"email\":\"john@example.com\"}}";
         
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.name")))
-                .thenReturn(java.util.Optional.of("john_doe"));
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.email")))
-                .thenReturn(java.util.Optional.of("john@example.com"));
-        when(sqlEscapeUtil.formatValueForType(any(), org.mockito.ArgumentMatchers.eq("VARCHAR(255)")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.name")))
+                .thenReturn(Optional.of("john_doe"));
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.email")))
+                .thenReturn(Optional.of("john@example.com"));
+        when(sqlEscapeUtil.formatValueForType(any(), eq("VARCHAR(255)")))
                 .thenAnswer(invocation -> {
                     Object value = invocation.getArgument(0);
                     return "'" + value + "'";
@@ -98,10 +99,10 @@ class InsertStatementGeneratorTest {
         tableDefinition.setSchema("public");
         String jsonData = "{\"user\":{\"name\":\"john_doe\"}}";
         
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.name")))
-                .thenReturn(java.util.Optional.of("john_doe"));
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.email")))
-                .thenReturn(java.util.Optional.empty());
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.name")))
+                .thenReturn(Optional.of("john_doe"));
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.email")))
+                .thenReturn(Optional.empty());
         when(sqlEscapeUtil.formatValueForType(any(), anyString()))
                 .thenAnswer(invocation -> {
                     Object value = invocation.getArgument(0);
@@ -124,15 +125,18 @@ class InsertStatementGeneratorTest {
                 .defaultValue("active")
                 .build();
         
-        tableDefinition.getColumns().add(columnWithDefault);
+        // Create a new mutable list
+        java.util.List<ColumnDefinition> columns = new java.util.ArrayList<>(tableDefinition.getColumns());
+        columns.add(columnWithDefault);
+        tableDefinition.setColumns(columns);
         String jsonData = "{\"user\":{\"name\":\"john_doe\"}}";
         
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.name")))
-                .thenReturn(java.util.Optional.of("john_doe"));
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.email")))
-                .thenReturn(java.util.Optional.empty());
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("status")))
-                .thenReturn(java.util.Optional.empty());
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.name")))
+                .thenReturn(Optional.of("john_doe"));
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.email")))
+                .thenReturn(Optional.empty());
+        when(jsonPathExtractor.extractValue(anyString(), eq("status")))
+                .thenReturn(Optional.empty());
         when(sqlEscapeUtil.formatValueForType(any(), anyString()))
                 .thenAnswer(invocation -> {
                     Object value = invocation.getArgument(0);
@@ -149,7 +153,7 @@ class InsertStatementGeneratorTest {
         String jsonData = "{\"user\":{\"name\":\"john_doe\"}}";
         
         when(jsonPathExtractor.extractValue(anyString(), anyString()))
-                .thenReturn(java.util.Optional.of("john_doe"));
+                .thenReturn(Optional.of("john_doe"));
         when(sqlEscapeUtil.formatValueForType(any(), anyString()))
                 .thenReturn("'john_doe'");
         
@@ -164,7 +168,7 @@ class InsertStatementGeneratorTest {
         String jsonData = "[{\"user\":{\"name\":\"john_doe\"}},{\"user\":{\"name\":\"jane_doe\"}}]";
         
         when(jsonPathExtractor.extractValue(anyString(), anyString()))
-                .thenReturn(java.util.Optional.of("test"));
+                .thenReturn(Optional.of("test"));
         when(sqlEscapeUtil.formatValueForType(any(), anyString()))
                 .thenReturn("'test'");
         
@@ -173,5 +177,4 @@ class InsertStatementGeneratorTest {
         assertEquals(2, results.size());
         results.forEach(result -> assertTrue(result.contains("INSERT INTO")));
     }
-    
 }

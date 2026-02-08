@@ -6,10 +6,9 @@ import com.yourcompany.jsontosql.model.TableDefinition;
 import com.yourcompany.jsontosql.util.JsonPathExtractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -17,16 +16,19 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class JsonMappingServiceTest {
     
-    @Mock
+    @MockBean
     private JsonPathExtractor jsonPathExtractor;
     
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
     
+    @Autowired
     private JsonMappingService jsonMappingService;
     
     private TableDefinition tableDefinition;
@@ -59,9 +61,9 @@ class JsonMappingServiceTest {
     
     @Test
     void testValidateJsonAgainstSchema_Valid() {
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.name")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.name")))
                 .thenReturn(Optional.of("john_doe"));
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.email")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.email")))
                 .thenReturn(Optional.of("john@example.com"));
         
         Map<String, Object> result = jsonMappingService.validateJsonAgainstSchema(tableDefinition, jsonData);
@@ -73,9 +75,9 @@ class JsonMappingServiceTest {
     
     @Test
     void testValidateJsonAgainstSchema_MissingRequiredField() {
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.name")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.name")))
                 .thenReturn(Optional.empty());
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.email")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.email")))
                 .thenReturn(Optional.of("john@example.com"));
         
         Map<String, Object> result = jsonMappingService.validateJsonAgainstSchema(tableDefinition, jsonData);
@@ -87,9 +89,9 @@ class JsonMappingServiceTest {
     
     @Test
     void testValidateJsonAgainstSchema_OptionalFieldMissing() {
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.name")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.name")))
                 .thenReturn(Optional.of("john_doe"));
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.email")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.email")))
                 .thenReturn(Optional.empty());
         
         Map<String, Object> result = jsonMappingService.validateJsonAgainstSchema(tableDefinition, jsonData);
@@ -100,9 +102,9 @@ class JsonMappingServiceTest {
     
     @Test
     void testMapJsonToColumns() {
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.name")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.name")))
                 .thenReturn(Optional.of("john_doe"));
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.email")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.email")))
                 .thenReturn(Optional.of("john@example.com"));
         
         Map<String, Object> result = jsonMappingService.mapJsonToColumns(tableDefinition, jsonData);
@@ -120,13 +122,16 @@ class JsonMappingServiceTest {
                 .nullable(true)
                 .defaultValue("active")
                 .build();
-        tableDefinition.getColumns().add(columnWithDefault);
+        // Create a new mutable list
+        java.util.List<ColumnDefinition> columns = new java.util.ArrayList<>(tableDefinition.getColumns());
+        columns.add(columnWithDefault);
+        tableDefinition.setColumns(columns);
         
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.name")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.name")))
                 .thenReturn(Optional.of("john_doe"));
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("user.email")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("user.email")))
                 .thenReturn(Optional.of("john@example.com"));
-        when(jsonPathExtractor.extractValue(anyString(), org.mockito.ArgumentMatchers.eq("status")))
+        when(jsonPathExtractor.extractValue(anyString(), eq("status")))
                 .thenReturn(Optional.empty());
         
         Map<String, Object> result = jsonMappingService.mapJsonToColumns(tableDefinition, jsonData);

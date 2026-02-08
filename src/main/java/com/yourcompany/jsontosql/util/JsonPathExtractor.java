@@ -2,14 +2,16 @@ package com.yourcompany.jsontosql.util;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Slf4j
 @Component
 public class JsonPathExtractor {
+    
+    private static final Logger log = LoggerFactory.getLogger(JsonPathExtractor.class);
     
     /**
      * Extracts a value from JSON using a JSONPath expression

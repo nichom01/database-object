@@ -14,12 +14,12 @@ A Spring Boot application that generates SQL scripts from JSON objects using con
 ## Technology Stack
 
 - Spring Boot 3.2.0
-- Java 17
+- Java 17+ (tested with Java 25)
 - Jackson (JSON processing)
 - JSONPath (for JSON path extraction)
-- Lombok (reduce boilerplate)
 - Spring Validation
 - JUnit 5 & MockMvc (testing)
+- Mockito 5.21.0 (with experimental ByteBuddy support for Java 25)
 
 ## Project Structure
 
@@ -186,8 +186,10 @@ curl -X POST http://localhost:8080/api/v1/sql/generate \
 
 ### Prerequisites
 
-- Java 17 or higher
+- **Java 17 or higher** (tested with Java 25)
 - Maven 3.6+
+
+**Note:** This project uses standard Java (no Lombok) and works with Java 25. Mockito tests require the experimental ByteBuddy flag configured in `pom.xml` for Java 25 compatibility.
 
 ### Build
 
@@ -214,6 +216,20 @@ Once running, API documentation is available at:
 Table definitions can be stored in:
 1. **File System**: `~/.json-to-sql/table-definitions/` (configurable via `app.table-definitions.storage-path`)
 2. **Classpath**: `src/main/resources/table-definitions/` (default definitions)
+
+## Testing
+
+This project includes comprehensive unit tests (81 tests total):
+- ✅ All tests passing with Java 25 (using Mockito with experimental ByteBuddy support)
+- Tests cover utilities, generators, services, controllers, and exception handling
+- See `TESTING.md` and `MOCKITO_JAVA25_SOLUTION.md` for testing details
+
+## Project Features
+
+- ✅ **No Lombok** - Uses standard Java getters/setters and builder patterns
+- ✅ **Java 25 Compatible** - Works with latest Java versions
+- ✅ **Comprehensive Tests** - 81 unit tests covering all components
+- ✅ **Mockito Support** - Works with Java 25 using experimental ByteBuddy flag
 
 ## Future Enhancements
 

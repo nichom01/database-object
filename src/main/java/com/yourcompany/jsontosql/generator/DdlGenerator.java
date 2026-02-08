@@ -3,19 +3,19 @@ package com.yourcompany.jsontosql.generator;
 import com.yourcompany.jsontosql.model.ColumnDefinition;
 import com.yourcompany.jsontosql.model.TableDefinition;
 import com.yourcompany.jsontosql.util.SqlEscapeUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class DdlGenerator {
     
     private final SqlEscapeUtil sqlEscapeUtil;
+    
+    public DdlGenerator(SqlEscapeUtil sqlEscapeUtil) {
+        this.sqlEscapeUtil = sqlEscapeUtil;
+    }
     
     /**
      * Generates a CREATE TABLE statement from table definition

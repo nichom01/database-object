@@ -4,20 +4,24 @@ import com.yourcompany.jsontosql.generator.SqlScriptGenerator;
 import com.yourcompany.jsontosql.model.SqlGenerationRequest;
 import com.yourcompany.jsontosql.model.SqlGenerationResponse;
 import com.yourcompany.jsontosql.model.TableDefinition;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class SqlGeneratorService {
     
     private final TableDefinitionService tableDefinitionService;
     private final JsonMappingService jsonMappingService;
     private final SqlScriptGenerator sqlScriptGenerator;
+    
+    public SqlGeneratorService(TableDefinitionService tableDefinitionService, 
+                              JsonMappingService jsonMappingService,
+                              SqlScriptGenerator sqlScriptGenerator) {
+        this.tableDefinitionService = tableDefinitionService;
+        this.jsonMappingService = jsonMappingService;
+        this.sqlScriptGenerator = sqlScriptGenerator;
+    }
     
     /**
      * Generates SQL script from request

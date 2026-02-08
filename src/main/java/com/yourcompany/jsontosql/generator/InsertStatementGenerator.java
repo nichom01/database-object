@@ -6,21 +6,26 @@ import com.yourcompany.jsontosql.model.ColumnDefinition;
 import com.yourcompany.jsontosql.model.TableDefinition;
 import com.yourcompany.jsontosql.util.JsonPathExtractor;
 import com.yourcompany.jsontosql.util.SqlEscapeUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class InsertStatementGenerator {
+    
+    private static final Logger log = LoggerFactory.getLogger(InsertStatementGenerator.class);
     
     private final JsonPathExtractor jsonPathExtractor;
     private final SqlEscapeUtil sqlEscapeUtil;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    
+    public InsertStatementGenerator(JsonPathExtractor jsonPathExtractor, SqlEscapeUtil sqlEscapeUtil) {
+        this.jsonPathExtractor = jsonPathExtractor;
+        this.sqlEscapeUtil = sqlEscapeUtil;
+    }
     
     /**
      * Generates an INSERT statement from JSON data and table definition

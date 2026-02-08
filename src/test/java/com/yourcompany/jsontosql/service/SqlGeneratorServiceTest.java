@@ -7,10 +7,9 @@ import com.yourcompany.jsontosql.model.SqlGenerationResponse;
 import com.yourcompany.jsontosql.model.TableDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -20,19 +19,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class SqlGeneratorServiceTest {
     
-    @Mock
+    @MockBean
     private TableDefinitionService tableDefinitionService;
     
-    @Mock
+    @MockBean
     private JsonMappingService jsonMappingService;
     
-    @Mock
+    @MockBean
     private SqlScriptGenerator sqlScriptGenerator;
     
-    @InjectMocks
+    @Autowired
     private SqlGeneratorService sqlGeneratorService;
     
     private SqlGenerationRequest request;

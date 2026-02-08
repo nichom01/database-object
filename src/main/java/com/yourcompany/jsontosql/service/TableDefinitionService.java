@@ -3,7 +3,8 @@ package com.yourcompany.jsontosql.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yourcompany.jsontosql.exception.TableDefinitionNotFoundException;
 import com.yourcompany.jsontosql.model.TableDefinition;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -17,9 +18,10 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Slf4j
 @Service
 public class TableDefinitionService {
+    
+    private static final Logger log = LoggerFactory.getLogger(TableDefinitionService.class);
     
     private final ObjectMapper objectMapper;
     private final ResourceLoader resourceLoader;

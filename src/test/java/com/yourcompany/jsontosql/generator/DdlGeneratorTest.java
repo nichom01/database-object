@@ -5,10 +5,9 @@ import com.yourcompany.jsontosql.model.TableDefinition;
 import com.yourcompany.jsontosql.util.SqlEscapeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 
@@ -16,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class DdlGeneratorTest {
     
-    @Mock
+    @MockBean
     private SqlEscapeUtil sqlEscapeUtil;
     
-    @InjectMocks
+    @Autowired
     private DdlGenerator ddlGenerator;
     
     private TableDefinition tableDefinition;
@@ -102,7 +101,10 @@ class DdlGeneratorTest {
                 .nullable(false)
                 .primaryKey(true)
                 .build();
-        tableDefinition.getColumns().add(col2);
+        // Create a new mutable list
+        java.util.List<ColumnDefinition> columns = new java.util.ArrayList<>(tableDefinition.getColumns());
+        columns.add(col2);
+        tableDefinition.setColumns(columns);
         
         String result = ddlGenerator.generateCreateTable(tableDefinition);
         

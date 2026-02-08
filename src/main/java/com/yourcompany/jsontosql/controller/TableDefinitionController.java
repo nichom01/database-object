@@ -3,21 +3,25 @@ package com.yourcompany.jsontosql.controller;
 import com.yourcompany.jsontosql.model.TableDefinition;
 import com.yourcompany.jsontosql.service.TableDefinitionService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/tables")
-@RequiredArgsConstructor
 public class TableDefinitionController {
     
+    private static final Logger log = LoggerFactory.getLogger(TableDefinitionController.class);
+    
     private final TableDefinitionService tableDefinitionService;
+    
+    public TableDefinitionController(TableDefinitionService tableDefinitionService) {
+        this.tableDefinitionService = tableDefinitionService;
+    }
     
     @GetMapping
     public ResponseEntity<List<TableDefinition>> getAllTableDefinitions() {
