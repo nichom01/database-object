@@ -205,6 +205,21 @@ mvn spring-boot:run
 
 The application will start on `http://localhost:8080`
 
+### Running Tests
+
+```bash
+# Run all tests
+mvn test
+
+# Run specific test class
+mvn test -Dtest=JsonPathExtractorTest
+
+# Run tests without mocking tests (if using Java 25 without experimental flag)
+mvn test -Dtest='JsonPathExtractorTest,SqlEscapeUtilTest,GlobalExceptionHandlerTest'
+```
+
+**Note:** For Java 25, Mockito requires the experimental ByteBuddy flag (already configured in `pom.xml`). All 81 tests pass successfully with this configuration.
+
 ### API Documentation
 
 Once running, API documentation is available at:
